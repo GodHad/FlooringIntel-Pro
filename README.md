@@ -5,3 +5,6 @@ FlooringIntel is a product-change intelligence dashboard for flooring, carpet, r
 This repository contains the frontend application for the FlooringIntel platform.
 
 ## Features
+
+* User authentication and protected dashboard routes
+* Product dashboard with search, filters, and pagination
