@@ -14,3 +14,5 @@ This repository contains the frontend application for the FlooringIntel platform
 * CSV/XLSX export workflows
 * User subscription and billing pages
 * Daily and weekly report views
+* Slack integration settings for report notifications
+* Admin dashboard pages
