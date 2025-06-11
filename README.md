@@ -34,3 +34,5 @@ This repository contains the frontend application for the FlooringIntel platform
 ```bash
 src/
 components/        # Reusable UI components
+pages/             # Route-level pages
+layouts/           # Dashboard and public layouts
