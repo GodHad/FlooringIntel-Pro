@@ -38,3 +38,5 @@ pages/             # Route-level pages
 layouts/           # Dashboard and public layouts
 hooks/             # Custom React hooks
 services/          # API service functions
+utils/             # Helpers and formatters
+types/             # TypeScript types/interfaces
