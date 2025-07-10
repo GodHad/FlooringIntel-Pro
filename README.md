@@ -49,3 +49,5 @@ assets/            # Static frontend assets
 
 ```bash
 git clone <repository-url>
+cd flooringintel-frontend
+```
