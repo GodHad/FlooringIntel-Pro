@@ -51,3 +51,7 @@ assets/            # Static frontend assets
 git clone <repository-url>
 cd flooringintel-frontend
 ```
+
+### 2. Install dependencies
+
+```bash
