@@ -55,3 +55,5 @@ cd flooringintel-frontend
 ### 2. Install dependencies
 
 ```bash
+npm install
+```
