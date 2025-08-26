@@ -103,3 +103,5 @@ This repository contains the frontend application for the FlooringIntel platform
 
 * User authentication and protected dashboard routes
 * Product dashboard with search, filters, and pagination
+* Website tracking and subscription-based access
+* Product change monitoring views
