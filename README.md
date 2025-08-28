@@ -105,3 +105,5 @@ This repository contains the frontend application for the FlooringIntel platform
 * Product dashboard with search, filters, and pagination
 * Website tracking and subscription-based access
 * Product change monitoring views
+* New products, removed products, and availability/status badges
+* CSV/XLSX export workflows
