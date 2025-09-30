@@ -141,3 +141,6 @@ assets/            # Static frontend assets
 ## Getting Started
 
 ### 1. Clone the repository
+
+```bash
+git clone <repository-url>
