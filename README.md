@@ -152,3 +152,7 @@ cd flooringintel-frontend
 ```bash
 npm install
 ```
+
+### 3. Create environment file
+
+Create a `.env` file in the project root.
