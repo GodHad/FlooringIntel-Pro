@@ -161,3 +161,6 @@ Create a `.env` file in the project root.
 VITE_API_BASE_URL=http://localhost:5000/api
 VITE_APP_NAME=FlooringIntel
 VITE_APP_URL=http://localhost:5173
+```
+
+Update the values based on your local backend and production environment.
