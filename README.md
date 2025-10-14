@@ -174,3 +174,5 @@ npm run dev
 The frontend should run at:
 
 ```bash
+http://localhost:5173
+```
