@@ -176,3 +176,7 @@ The frontend should run at:
 ```bash
 http://localhost:5173
 ```
+
+## Available Scripts
+
+```bash
