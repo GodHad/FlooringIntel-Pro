@@ -186,3 +186,5 @@ npm run dev
 Runs the app in development mode.
 
 ```bash
+npm run build
+```
