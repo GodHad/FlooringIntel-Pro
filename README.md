@@ -216,3 +216,5 @@ This repository contains the frontend application for the FlooringIntel platform
 ## Tech Stack
 
 * React
+* TypeScript
+* Vite
