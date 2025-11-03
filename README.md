@@ -212,3 +212,7 @@ This repository contains the frontend application for the FlooringIntel platform
 * Admin dashboard pages
 * Admin CRM page for lead management and marketing automation
 * Responsive UI for desktop and mobile
+
+## Tech Stack
+
+* React
