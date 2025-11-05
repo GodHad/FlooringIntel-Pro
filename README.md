@@ -230,3 +230,5 @@ src/
 components/        # Reusable UI components
 pages/             # Route-level pages
 layouts/           # Dashboard and public layouts
+hooks/             # Custom React hooks
+services/          # API service functions
