@@ -234,3 +234,5 @@ hooks/             # Custom React hooks
 services/          # API service functions
 utils/             # Helpers and formatters
 types/             # TypeScript types/interfaces
+assets/            # Static frontend assets
+```
