@@ -263,3 +263,7 @@ VITE_APP_URL=http://localhost:5173
 ```
 
 Update the values based on your local backend and production environment.
+
+### 4. Run the development server
+
+```bash
