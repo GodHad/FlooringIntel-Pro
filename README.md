@@ -267,3 +267,5 @@ Update the values based on your local backend and production environment.
 ### 4. Run the development server
 
 ```bash
+npm run dev
+```
