@@ -269,3 +269,7 @@ Update the values based on your local backend and production environment.
 ```bash
 npm run dev
 ```
+
+The frontend should run at:
+
+```bash
