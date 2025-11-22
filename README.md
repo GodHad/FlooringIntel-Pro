@@ -287,3 +287,7 @@ Runs the app in development mode.
 ```bash
 npm run build
 ```
+
+Builds the app for production.
+
+```bash
