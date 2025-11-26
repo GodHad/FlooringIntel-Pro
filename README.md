@@ -303,3 +303,6 @@ npm run lint
 Runs linting if configured.
 
 ## Environment Variables
+
+| Variable            | Description          |
+| ------------------- | -------------------- |
