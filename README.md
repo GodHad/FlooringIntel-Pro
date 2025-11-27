@@ -297,3 +297,5 @@ npm run preview
 Previews the production build locally.
 
 ```bash
+npm run lint
+```
