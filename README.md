@@ -308,3 +308,6 @@ Runs linting if configured.
 | ------------------- | -------------------- |
 | `VITE_API_BASE_URL` | Backend API base URL |
 | `VITE_APP_NAME`     | Application name     |
+| `VITE_APP_URL`      | Frontend app URL     |
+
+Example production values:
