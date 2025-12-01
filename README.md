@@ -328,3 +328,5 @@ The backend handles:
 * User roles and permissions
 * Product data
 * Website tracking
+* Scraping requests
+* Billing and subscriptions
