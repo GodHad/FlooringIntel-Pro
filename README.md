@@ -316,3 +316,6 @@ Example production values:
 VITE_API_BASE_URL=https://api.flooringintel.com/api
 VITE_APP_NAME=FlooringIntel
 VITE_APP_URL=https://app.flooringintel.com
+```
+
+## Backend Requirement
