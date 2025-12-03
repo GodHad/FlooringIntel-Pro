@@ -334,3 +334,7 @@ The backend handles:
 * Slack integration
 * CRM and marketing automation
 * Admin APIs
+
+Make sure the backend API URL is correctly set in `VITE_API_BASE_URL`.
+
+## User Roles
