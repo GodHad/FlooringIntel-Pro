@@ -338,3 +338,7 @@ The backend handles:
 Make sure the backend API URL is correctly set in `VITE_API_BASE_URL`.
 
 ## User Roles
+
+The frontend supports role-based access.
+
+### User
