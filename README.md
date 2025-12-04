@@ -350,3 +350,7 @@ Can access subscribed websites, products, reports, exports, and account settings
 Can access all product and website data but cannot access admin pages.
 
 ### Admin
+
+Can access all dashboard features, admin pages, scraping controls, CRM, user management, and platform settings.
+
+## Admin CRM
