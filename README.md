@@ -346,3 +346,7 @@ The frontend supports role-based access.
 Can access subscribed websites, products, reports, exports, and account settings.
 
 ### Partner
+
+Can access all product and website data but cannot access admin pages.
+
+### Admin
