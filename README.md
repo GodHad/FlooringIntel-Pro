@@ -358,3 +358,5 @@ Can access all dashboard features, admin pages, scraping controls, CRM, user man
 The Admin CRM page is available at:
 
 ```bash
+/dashboard/admin/crm
+```
