@@ -364,3 +364,5 @@ The Admin CRM page is available at:
 CRM features include:
 
 * CSV lead import
+* Lead scoring and segmentation
+* Lead approval workflow
