@@ -366,3 +366,5 @@ CRM features include:
 * CSV lead import
 * Lead scoring and segmentation
 * Lead approval workflow
+* Marketing enable/disable toggle
+* Email tracking status
