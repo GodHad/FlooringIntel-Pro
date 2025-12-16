@@ -383,3 +383,6 @@ Slack integration is handled by the backend. The frontend only manages:
 * Integration status
 * Channel selection
 * Notification preferences
+* Test message action
+
+## Build for Production
