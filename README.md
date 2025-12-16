@@ -381,3 +381,5 @@ Slack integration is handled by the backend. The frontend only manages:
 
 * Connect Slack button
 * Integration status
+* Channel selection
+* Notification preferences
