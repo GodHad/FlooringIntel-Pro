@@ -402,3 +402,6 @@ Deploy the `dist` folder to your preferred hosting provider, such as Vercel, Net
 ## Deployment Notes
 
 Recommended frontend deployment:
+
+```bash
+Vercel
