@@ -423,3 +423,7 @@ Create a new branch for each feature or fix:
 ```bash
 git checkout -b feature/admin-crm
 ```
+
+Commit changes:
+
+```bash
