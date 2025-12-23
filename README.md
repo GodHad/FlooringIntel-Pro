@@ -413,3 +413,7 @@ Recommended domains:
 https://app.flooringintel.com
 https://flooringintel.com
 ```
+
+Make sure production environment variables are configured in the hosting dashboard.
+
+## Git Workflow
