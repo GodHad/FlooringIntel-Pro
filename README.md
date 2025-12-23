@@ -417,3 +417,7 @@ https://flooringintel.com
 Make sure production environment variables are configured in the hosting dashboard.
 
 ## Git Workflow
+
+Create a new branch for each feature or fix:
+
+```bash
