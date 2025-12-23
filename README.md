@@ -429,3 +429,6 @@ Commit changes:
 ```bash
 git add .
 git commit -m "Add admin CRM frontend"
+```
+
+Push branch:
