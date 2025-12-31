@@ -442,3 +442,5 @@ Open a pull request into `main`.
 ## Code Guidelines
 
 * Keep components small and reusable
+* Keep API calls inside service files
+* Avoid hardcoded API URLs
