@@ -444,3 +444,5 @@ Open a pull request into `main`.
 * Keep components small and reusable
 * Keep API calls inside service files
 * Avoid hardcoded API URLs
+* Use TypeScript types for API responses
+* Keep admin-only UI protected by role checks
