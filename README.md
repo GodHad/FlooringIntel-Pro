@@ -446,3 +446,5 @@ Open a pull request into `main`.
 * Avoid hardcoded API URLs
 * Use TypeScript types for API responses
 * Keep admin-only UI protected by role checks
+* Do not expose secrets in frontend code
+* Do not store private API keys in `.env` files with `VITE_` prefix
