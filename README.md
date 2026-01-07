@@ -456,3 +456,5 @@ Frontend environment variables are public in the browser when prefixed with `VIT
 Never store these values in frontend code:
 
 * Slack client secret
+* Stripe secret key
+* Email service API key
