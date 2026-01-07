@@ -448,3 +448,7 @@ Open a pull request into `main`.
 * Keep admin-only UI protected by role checks
 * Do not expose secrets in frontend code
 * Do not store private API keys in `.env` files with `VITE_` prefix
+
+## Security Notes
+
+Frontend environment variables are public in the browser when prefixed with `VITE_`.
