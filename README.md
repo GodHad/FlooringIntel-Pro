@@ -458,3 +458,5 @@ Never store these values in frontend code:
 * Slack client secret
 * Stripe secret key
 * Email service API key
+* Database credentials
+* JWT secret
