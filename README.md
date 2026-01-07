@@ -452,3 +452,7 @@ Open a pull request into `main`.
 ## Security Notes
 
 Frontend environment variables are public in the browser when prefixed with `VITE_`.
+
+Never store these values in frontend code:
+
+* Slack client secret
