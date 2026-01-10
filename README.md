@@ -460,3 +460,6 @@ Never store these values in frontend code:
 * Email service API key
 * Database credentials
 * JWT secret
+* Private webhook URLs
+
+These must stay in the backend environment.
