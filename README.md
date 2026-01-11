@@ -463,3 +463,7 @@ Never store these values in frontend code:
 * Private webhook URLs
 
 These must stay in the backend environment.
+
+## License
+
+Private project. All rights reserved.
