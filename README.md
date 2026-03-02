@@ -619,3 +619,5 @@ This repository contains the frontend application for the FlooringIntel platform
 * Daily and weekly report views
 * Slack integration settings for report notifications
 * Admin dashboard pages
+* Admin CRM page for lead management and marketing automation
+* Responsive UI for desktop and mobile
