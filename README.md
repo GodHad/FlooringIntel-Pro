@@ -631,3 +631,7 @@ This repository contains the frontend application for the FlooringIntel platform
 * React Router
 * Axios or API client layer
 * Component-based dashboard UI
+
+## Project Structure
+
+```bash
