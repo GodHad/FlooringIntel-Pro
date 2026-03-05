@@ -635,3 +635,5 @@ This repository contains the frontend application for the FlooringIntel platform
 ## Project Structure
 
 ```bash
+src/
+components/        # Reusable UI components
