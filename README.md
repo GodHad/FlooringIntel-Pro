@@ -645,3 +645,7 @@ utils/             # Helpers and formatters
 types/             # TypeScript types/interfaces
 assets/            # Static frontend assets
 ```
+
+## Getting Started
+
+### 1. Clone the repository
