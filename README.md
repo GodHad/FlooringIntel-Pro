@@ -688,3 +688,5 @@ http://localhost:5173
 ## Available Scripts
 
 ```bash
+npm run dev
+```
