@@ -690,3 +690,7 @@ http://localhost:5173
 ```bash
 npm run dev
 ```
+
+Runs the app in development mode.
+
+```bash
