@@ -700,3 +700,5 @@ npm run build
 Builds the app for production.
 
 ```bash
+npm run preview
+```
