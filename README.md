@@ -708,3 +708,7 @@ Previews the production build locally.
 ```bash
 npm run lint
 ```
+
+Runs linting if configured.
+
+## Environment Variables
