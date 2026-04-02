@@ -702,3 +702,7 @@ Builds the app for production.
 ```bash
 npm run preview
 ```
+
+Previews the production build locally.
+
+```bash
