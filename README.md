@@ -720,3 +720,6 @@ Runs linting if configured.
 | `VITE_APP_URL`      | Frontend app URL     |
 
 Example production values:
+
+```env
+VITE_API_BASE_URL=https://api.flooringintel.com/api
