@@ -728,3 +728,7 @@ VITE_APP_URL=https://app.flooringintel.com
 ```
 
 ## Backend Requirement
+
+This frontend requires the FlooringIntel backend API to be running.
+
+The backend handles:
