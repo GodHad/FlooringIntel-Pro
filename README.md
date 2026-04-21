@@ -735,3 +735,5 @@ The backend handles:
 
 * Authentication
 * User roles and permissions
+* Product data
+* Website tracking
