@@ -732,3 +732,6 @@ VITE_APP_URL=https://app.flooringintel.com
 This frontend requires the FlooringIntel backend API to be running.
 
 The backend handles:
+
+* Authentication
+* User roles and permissions
