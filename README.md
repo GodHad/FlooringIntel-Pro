@@ -741,3 +741,5 @@ The backend handles:
 * Billing and subscriptions
 * Email reports
 * Slack integration
+* CRM and marketing automation
+* Admin APIs
