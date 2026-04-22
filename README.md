@@ -739,3 +739,5 @@ The backend handles:
 * Website tracking
 * Scraping requests
 * Billing and subscriptions
+* Email reports
+* Slack integration
