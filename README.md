@@ -751,3 +751,7 @@ Make sure the backend API URL is correctly set in `VITE_API_BASE_URL`.
 The frontend supports role-based access.
 
 ### User
+
+Can access subscribed websites, products, reports, exports, and account settings.
+
+### Partner
