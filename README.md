@@ -763,3 +763,7 @@ Can access all product and website data but cannot access admin pages.
 Can access all dashboard features, admin pages, scraping controls, CRM, user management, and platform settings.
 
 ## Admin CRM
+
+The Admin CRM page is available at:
+
+```bash
