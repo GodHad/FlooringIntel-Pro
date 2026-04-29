@@ -769,3 +769,7 @@ The Admin CRM page is available at:
 ```bash
 /dashboard/admin/crm
 ```
+
+CRM features include:
+
+* CSV lead import
