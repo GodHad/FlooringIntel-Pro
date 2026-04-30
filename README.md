@@ -779,3 +779,7 @@ CRM features include:
 * Email tracking status
 * Lead registration matching
 * Marketing status management
+
+Only Admin users should be able to access this page.
+
+## Slack Integration
