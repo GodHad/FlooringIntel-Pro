@@ -777,3 +777,5 @@ CRM features include:
 * Lead approval workflow
 * Marketing enable/disable toggle
 * Email tracking status
+* Lead registration matching
+* Marketing status management
