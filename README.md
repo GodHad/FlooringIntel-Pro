@@ -787,3 +787,6 @@ Only Admin users should be able to access this page.
 Users can connect Slack from the dashboard settings page to receive FlooringIntel notifications and daily/weekly reports in a selected Slack channel.
 
 Slack integration is handled by the backend. The frontend only manages:
+
+* Connect Slack button
+* Integration status
