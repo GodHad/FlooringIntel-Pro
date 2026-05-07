@@ -807,3 +807,7 @@ dist/
 ```
 
 Deploy the `dist` folder to your preferred hosting provider, such as Vercel, Netlify, or static hosting behind Nginx.
+
+## Deployment Notes
+
+Recommended frontend deployment:
