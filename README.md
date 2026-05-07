@@ -798,3 +798,6 @@ Slack integration is handled by the backend. The frontend only manages:
 
 ```bash
 npm run build
+```
+
+The production-ready files will be generated in:
