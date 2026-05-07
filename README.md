@@ -801,3 +801,6 @@ npm run build
 ```
 
 The production-ready files will be generated in:
+
+```bash
+dist/
