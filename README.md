@@ -795,3 +795,6 @@ Slack integration is handled by the backend. The frontend only manages:
 * Test message action
 
 ## Build for Production
+
+```bash
+npm run build
