@@ -804,3 +804,6 @@ The production-ready files will be generated in:
 
 ```bash
 dist/
+```
+
+Deploy the `dist` folder to your preferred hosting provider, such as Vercel, Netlify, or static hosting behind Nginx.
