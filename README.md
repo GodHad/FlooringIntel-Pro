@@ -814,3 +814,6 @@ Recommended frontend deployment:
 
 ```bash
 Vercel
+```
+
+Recommended domains:
