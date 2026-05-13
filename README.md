@@ -820,3 +820,5 @@ Recommended domains:
 
 ```bash
 https://app.flooringintel.com
+https://flooringintel.com
+```
