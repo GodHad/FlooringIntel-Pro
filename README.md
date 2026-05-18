@@ -836,3 +836,5 @@ git checkout -b feature/admin-crm
 Commit changes:
 
 ```bash
+git add .
+git commit -m "Add admin CRM frontend"
