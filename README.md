@@ -830,3 +830,5 @@ Make sure production environment variables are configured in the hosting dashboa
 Create a new branch for each feature or fix:
 
 ```bash
+git checkout -b feature/admin-crm
+```
