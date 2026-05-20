@@ -841,3 +841,6 @@ git commit -m "Add admin CRM frontend"
 ```
 
 Push branch:
+
+```bash
+git push origin feature/admin-crm
