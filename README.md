@@ -844,3 +844,6 @@ Push branch:
 
 ```bash
 git push origin feature/admin-crm
+```
+
+Open a pull request into `main`.
