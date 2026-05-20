@@ -847,3 +847,7 @@ git push origin feature/admin-crm
 ```
 
 Open a pull request into `main`.
+
+## Code Guidelines
+
+* Keep components small and reusable
