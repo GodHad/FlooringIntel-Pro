@@ -446,9 +446,41 @@ export type CrmLeadList = {
   };
 };
 
+export type CrmMarketingSettings = {
+  crm_marketing_enabled: boolean;
+  crm_daily_new_lead_limit: number;
+  crm_max_daily_new_lead_limit: number;
+  crm_successful_sending_days: number;
+  crm_last_limit_increase_at?: string | null;
+  crm_sender_name: string;
+  crm_sender_email?: string;
+  crm_report_url?: string;
+  crm_signup_url?: string;
+};
+
+export type CrmEmailLog = {
+  id: string;
+  lead_id: string;
+  email: string;
+  email_type: string;
+  tracking_id: string;
+  subject: string;
+  status: string;
+  sent_at?: string;
+  opened: boolean;
+  first_opened_at?: string;
+  last_opened_at?: string;
+  open_count: number;
+  clicked: boolean;
+  clicked_at?: string;
+  error_message?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
 export type CrmLeadDetail = {
   lead: CrmLead;
-  emailLogs: unknown[];
+  emailLogs: CrmEmailLog[];
 };
 
 export type CrmImportResult = {
@@ -766,6 +798,9 @@ export const adminService = {
 
 
 export const crmService = {
+  getSettings: (): Promise<CrmMarketingSettings> => request("/admin/crm/settings"),
+  updateSettings: (payload: Partial<CrmMarketingSettings>): Promise<CrmMarketingSettings> =>
+    request("/admin/crm/settings", { method: "PATCH", body: JSON.stringify(payload) }),
   getLeads: (params: CrmLeadParams = {}): Promise<CrmLeadList> =>
     request("/admin/crm/leads" + toQueryString(params)),
   importCsv: (file: File): Promise<CrmImportResult> => {
@@ -776,6 +811,9 @@ export const crmService = {
   getLead: (id: string): Promise<CrmLeadDetail> => request("/admin/crm/leads/" + id),
   updateLead: (id: string, payload: Partial<CrmLead>): Promise<CrmLead> =>
     request("/admin/crm/leads/" + id, { method: "PATCH", body: JSON.stringify(payload) }),
+  runLeadAction: (id: string, action: string): Promise<CrmLead> => post(`/admin/crm/leads/${id}/actions/${action}`, {}),
+  sendLeadTestEmail: (id: string, email_type = "sample_report"): Promise<{ ok: true; log: CrmEmailLog }> =>
+    post(`/admin/crm/leads/${id}/send-test-email`, { email_type }),
   bulkApprove: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-approve", { lead_ids }),
   bulkUnapprove: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-unapprove", { lead_ids }),
   bulkDoNotContact: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-do-not-contact", { lead_ids }),
@@ -823,5 +861,6 @@ export const getApiUrl = (path: string) => {
 
   return `${API_BASE}${path}`;
 };
+
 
 

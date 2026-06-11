@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PageHeader, StatusBadge } from "@/components/DashboardLayout";
 import { Card } from "@/components/ui/card";
@@ -27,7 +27,9 @@ import {
   crmService,
   type CrmImportResult,
   type CrmLead,
+  type CrmLeadDetail,
   type CrmLeadParams,
+  type CrmMarketingSettings,
 } from "@/services/api";
 import {
   ArrowDown,
@@ -131,11 +133,23 @@ function AdminCrmPage() {
   const [sortBy, setSortBy] = useState("created_at");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [detailLead, setDetailLead] = useState<CrmLead | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsForm, setSettingsForm] = useState<Partial<CrmMarketingSettings>>({});
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ["current-user"],
     queryFn: authService.getCurrentUser,
   });
+
+  const settingsQuery = useQuery({
+    queryKey: ["admin-crm-settings"],
+    queryFn: crmService.getSettings,
+    enabled: user?.role === "Admin",
+  });
+
+  useEffect(() => {
+    if (settingsQuery.data) setSettingsForm(settingsQuery.data);
+  }, [settingsQuery.data]);
 
   const params = useMemo<CrmLeadParams>(() => ({
     page,
@@ -176,6 +190,12 @@ function AdminCrmPage() {
     enabled: user?.role === "Admin",
   });
 
+  const detailQuery = useQuery({
+    queryKey: ["admin-crm-lead", detailLead?.id],
+    queryFn: () => crmService.getLead(detailLead!.id),
+    enabled: Boolean(detailLead),
+  });
+
   const invalidateLeads = async () => {
     setSelectedIds([]);
     await queryClient.invalidateQueries({ queryKey: ["admin-crm-leads"] });
@@ -207,6 +227,36 @@ function AdminCrmPage() {
     onError: (error: Error) => toast.error(error.message || "Bulk action failed"),
   });
 
+  const settingsMutation = useMutation({
+    mutationFn: (payload: Partial<CrmMarketingSettings>) => crmService.updateSettings(payload),
+    onSuccess: async (settings) => {
+      setSettingsForm(settings);
+      await queryClient.invalidateQueries({ queryKey: ["admin-crm-settings"] });
+      toast.success(settings.crm_marketing_enabled ? "CRM marketing enabled" : "CRM marketing settings saved");
+    },
+    onError: (error: Error) => toast.error(error.message || "Unable to save CRM settings"),
+  });
+
+  const leadActionMutation = useMutation({
+    mutationFn: ({ id, action }: { id: string; action: string }) => crmService.runLeadAction(id, action),
+    onSuccess: async (lead) => {
+      setDetailLead(lead);
+      await queryClient.invalidateQueries({ queryKey: ["admin-crm-leads"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-crm-lead", lead.id] });
+      toast.success("Lead updated");
+    },
+    onError: (error: Error) => toast.error(error.message || "Unable to update lead"),
+  });
+
+  const testEmailMutation = useMutation({
+    mutationFn: ({ id, emailType }: { id: string; emailType: string }) => crmService.sendLeadTestEmail(id, emailType),
+    onSuccess: async () => {
+      if (detailLead?.id) await queryClient.invalidateQueries({ queryKey: ["admin-crm-lead", detailLead.id] });
+      toast.success("Test email queued");
+    },
+    onError: (error: Error) => toast.error(error.message || "Unable to send test email"),
+  });
+
   if (userLoading) return null;
 
   if (user?.role !== "Admin") {
@@ -222,6 +272,8 @@ function AdminCrmPage() {
   const leads = data?.data ?? [];
   const pagination = data?.pagination ?? { page, limit: PAGE_SIZE, total: 0, total_pages: 1 };
   const summary = data?.summary;
+  const settings = settingsQuery.data;
+  const effectiveDetail = detailQuery.data ?? (detailLead ? { lead: detailLead, emailLogs: [] } satisfies CrmLeadDetail : null);
   const pageIds = leads.map((lead) => lead.id);
   const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
   const resetPage = (setter: (value: string) => void) => (value: string) => {
@@ -255,11 +307,33 @@ function AdminCrmPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <PageHeader title="CRM" description="Manage imported leads, outreach approval, marketing status, and email engagement." />
-        <Button disabled variant="outline" className="mt-1">
-          <Megaphone className="mr-2 h-4 w-4" /> Enable Marketing
-        </Button>
+        <div className="mt-1 flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => setSettingsOpen((open) => !open)}>Settings</Button>
+          <Button
+            variant={settings?.crm_marketing_enabled ? "destructive" : "default"}
+            disabled={settingsMutation.isPending || settingsQuery.isLoading}
+            onClick={() => settingsMutation.mutate({ ...settings, crm_marketing_enabled: !settings?.crm_marketing_enabled })}
+          >
+            <Megaphone className="mr-2 h-4 w-4" /> {settings?.crm_marketing_enabled ? "Disable Marketing" : "Enable Marketing"}
+          </Button>
+        </div>
       </div>
 
+      {settings && !settings.crm_marketing_enabled && (
+        <Card className="mb-6 border-amber-200 bg-amber-50 p-4 text-amber-900">
+          <p className="font-semibold">Marketing Disabled</p>
+          <p className="mt-1 text-sm">CRM outreach settings are saved, but future marketing cron jobs must not send emails until marketing is enabled.</p>
+        </Card>
+      )}
+
+      {settingsOpen && (
+        <CrmSettingsPanel
+          value={settingsForm}
+          onChange={setSettingsForm}
+          onSave={() => settingsMutation.mutate(settingsForm)}
+          saving={settingsMutation.isPending}
+        />
+      )}
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
         {SUMMARY_CARDS.map(([label, key]) => (
           <Card key={key} className="p-4">
@@ -444,7 +518,14 @@ function AdminCrmPage() {
         </div>
       </Card>
 
-      <LeadDetailSheet lead={detailLead} onOpenChange={(open) => !open && setDetailLead(null)} />
+      <LeadDetailSheet
+        detail={effectiveDetail}
+        loading={detailQuery.isLoading}
+        actionPending={leadActionMutation.isPending || testEmailMutation.isPending}
+        onAction={(action) => detailLead && leadActionMutation.mutate({ id: detailLead.id, action })}
+        onSendTestEmail={(emailType) => detailLead && testEmailMutation.mutate({ id: detailLead.id, emailType })}
+        onOpenChange={(open) => !open && setDetailLead(null)}
+      />
     </div>
   );
 }
@@ -473,6 +554,50 @@ function FilterSelect({ label, value, onChange, options, labels = {} }: { label:
   );
 }
 
+function CrmSettingsPanel({ value, onChange, onSave, saving }: { value: Partial<CrmMarketingSettings>; onChange: (value: Partial<CrmMarketingSettings>) => void; onSave: () => void; saving: boolean; }) {
+  const update = (field: keyof CrmMarketingSettings, nextValue: string | number | boolean) => onChange({ ...value, [field]: nextValue });
+
+  return (
+    <Card className="mb-6 p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 className="font-display text-lg font-semibold">CRM Marketing Settings</h2>
+          <p className="mt-1 text-sm text-muted-foreground">These settings prepare controlled outreach. No cron emails are started from this page.</p>
+        </div>
+        <Badge variant={value.crm_marketing_enabled ? "default" : "secondary"}>{value.crm_marketing_enabled ? "Enabled" : "Disabled"}</Badge>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="space-y-1.5">
+          <Label>Daily new lead limit</Label>
+          <Input type="number" min={0} value={value.crm_daily_new_lead_limit ?? 20} onChange={(event) => update("crm_daily_new_lead_limit", Number(event.target.value))} />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Max daily limit</Label>
+          <Input type="number" min={0} value={value.crm_max_daily_new_lead_limit ?? 50} onChange={(event) => update("crm_max_daily_new_lead_limit", Number(event.target.value))} />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Sender name</Label>
+          <Input value={value.crm_sender_name ?? ""} onChange={(event) => update("crm_sender_name", event.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Sender email</Label>
+          <Input value={value.crm_sender_email ?? ""} onChange={(event) => update("crm_sender_email", event.target.value)} placeholder="marketing@flooringintel.com" />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Sample report URL</Label>
+          <Input value={value.crm_report_url ?? ""} onChange={(event) => update("crm_report_url", event.target.value)} placeholder="https://..." />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Signup URL</Label>
+          <Input value={value.crm_signup_url ?? ""} onChange={(event) => update("crm_signup_url", event.target.value)} placeholder="https://..." />
+        </div>
+      </div>
+      <div className="mt-4 flex justify-end">
+        <Button disabled={saving} onClick={onSave}>{saving ? "Saving..." : "Save settings"}</Button>
+      </div>
+    </Card>
+  );
+}
 function SortHeader({ label, field, sortBy, sortDir, onSort }: { label: string; field: string; sortBy: string; sortDir: "asc" | "desc"; onSort: (field: string) => void; }) {
   const active = sortBy === field;
   const Icon = active ? (sortDir === "asc" ? ArrowUp : ArrowDown) : ArrowUpDown;
@@ -489,20 +614,37 @@ function ActionButton({ label, icon }: { label: string; icon: ReactNode }) {
   return <Button size="sm" variant="ghost" title={label} onClick={() => toast.info(label + " will be added in the next CRM part.")}>{icon}</Button>;
 }
 
-function LeadDetailSheet({ lead, onOpenChange }: { lead: CrmLead | null; onOpenChange: (open: boolean) => void }) {
+function LeadDetailSheet({ detail, loading, actionPending, onAction, onSendTestEmail, onOpenChange }: { detail: CrmLeadDetail | null; loading: boolean; actionPending: boolean; onAction: (action: string) => void; onSendTestEmail: (emailType: string) => void; onOpenChange: (open: boolean) => void }) {
+  const lead = detail?.lead ?? null;
   const scoreReasons = lead ? getScoreReasons(lead) : [];
+  const emailLogs = detail?.emailLogs ?? [];
 
   return (
     <Sheet open={Boolean(lead)} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
+      <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
         {lead && (
           <>
             <SheetHeader>
               <SheetTitle>{lead.company_name || "Lead details"}</SheetTitle>
-              <SheetDescription>{lead.email}</SheetDescription>
+              <SheetDescription>{loading ? "Loading latest CRM activity..." : lead.email}</SheetDescription>
             </SheetHeader>
 
             <div className="mt-6 space-y-6">
+              <section>
+                <h3 className="text-sm font-semibold">Actions</h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction(lead.approved_for_outreach ? "unapprove" : "approve")}>{lead.approved_for_outreach ? "Unapprove outreach" : "Approve outreach"}</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction(lead.marketing_enabled ? "disable_marketing" : "enable_marketing")}>{lead.marketing_enabled ? "Disable marketing" : "Enable marketing"}</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction("mark_replied")}>Mark Replied</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction("mark_not_interested")}>Not Interested</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction("mark_do_not_contact")}>Do Not Contact</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction("mark_bounced")}>Bounced</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction("mark_unsubscribed")}>Unsubscribed</Button>
+                  <Button size="sm" variant="outline" disabled={actionPending} onClick={() => onAction("reset_marketing")}>Reset marketing</Button>
+                  <Button size="sm" disabled={actionPending} onClick={() => onSendTestEmail("sample_report")}>Send test email</Button>
+                </div>
+              </section>
+
               <section>
                 <h3 className="text-sm font-semibold">Lead score</h3>
                 <div className="mt-3 rounded-md border border-border p-4">
@@ -517,23 +659,21 @@ function LeadDetailSheet({ lead, onOpenChange }: { lead: CrmLead | null; onOpenC
 
               <section>
                 <h3 className="text-sm font-semibold">Scoring reasons</h3>
-                {scoreReasons.length > 0 ? (
-                  <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                    {scoreReasons.map((reason) => <li key={reason} className="rounded-md border border-border p-3">{reason}</li>)}
-                  </ul>
-                ) : (
-                  <p className="mt-3 text-sm text-muted-foreground">No scoring reasons recorded.</p>
-                )}
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {scoreReasons.length > 0 ? scoreReasons.join(", ") : "No scoring reasons recorded."}
+                </p>
               </section>
 
               <section>
-                <h3 className="text-sm font-semibold">Company</h3>
+                <h3 className="text-sm font-semibold">Lead info</h3>
                 <div className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+                  <DetailItem label="Company" value={lead.company_name} />
+                  <DetailItem label="Email" value={lead.email} />
                   <DetailItem label="Phone" value={lead.phone} />
                   <DetailItem label="Country" value={lead.country} />
                   <DetailItem label="Address" value={lead.address} className="sm:col-span-2" />
                   <DetailItem label="Source" value={lead.source} />
-                  <DetailItem label="Email domain" value={lead.email_domain} />
+                  <DetailItem label="Description" value={lead.description} className="sm:col-span-2" />
                   <div className="sm:col-span-2">
                     <p className="text-xs text-muted-foreground">Website</p>
                     {lead.website_url ? (
@@ -547,22 +687,54 @@ function LeadDetailSheet({ lead, onOpenChange }: { lead: CrmLead | null; onOpenC
               </section>
 
               <section>
-                <h3 className="text-sm font-semibold">Engagement</h3>
+                <h3 className="text-sm font-semibold">Marketing info</h3>
                 <div className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
                   <DetailItem label="Marketing status" value={formatLabel(lead.marketing_status)} />
+                  <DetailItem label="Marketing enabled" value={boolLabel(lead.marketing_enabled)} />
                   <DetailItem label="Approved for outreach" value={boolLabel(lead.approved_for_outreach)} />
-                  <DetailItem label="Total emails sent" value={String(lead.total_email_count)} />
-                  <DetailItem label="Report emails sent" value={String(lead.report_email_count)} />
+                  <DetailItem label="Report email count" value={String(lead.report_email_count)} />
+                  <DetailItem label="Total email count" value={String(lead.total_email_count)} />
                   <DetailItem label="Open count" value={String(lead.open_count)} />
-                  <DetailItem label="Replied" value={boolLabel(lead.reply_detected)} />
-                  <DetailItem label="Registered" value={boolLabel(lead.registered)} />
-                  <DetailItem label="Scored at" value={formatDate(lead.scored_at)} />
                   <DetailItem label="First opened" value={formatDate(lead.first_opened_at)} />
                   <DetailItem label="Last opened" value={formatDate(lead.last_opened_at)} />
-                  <DetailItem label="Last email sent" value={formatDate(lead.last_email_sent_at)} />
+                  <DetailItem label="Last engagement" value={formatDate(lead.last_engagement_at)} />
+                  <DetailItem label="Last sent" value={formatDate(lead.last_email_sent_at)} />
                   <DetailItem label="Next email" value={formatDate(lead.next_email_at)} />
-                  <DetailItem label="Created" value={formatDate(lead.created_at)} />
+                  <DetailItem label="Registered" value={boolLabel(lead.registered)} />
+                  <DetailItem label="Do not contact" value={boolLabel(lead.do_not_contact)} />
+                  <DetailItem label="Unsubscribe requested" value={boolLabel(lead.unsubscribe_requested)} />
+                  <DetailItem label="Bounce detected" value={boolLabel(lead.bounce_detected)} />
+                  <DetailItem label="Last error" value={lead.last_error} className="sm:col-span-2" />
                 </div>
+              </section>
+
+              <section>
+                <h3 className="text-sm font-semibold">Email logs</h3>
+                {emailLogs.length > 0 ? (
+                  <div className="mt-3 space-y-3">
+                    {emailLogs.map((log) => (
+                      <div key={log.id} className="rounded-md border border-border p-3 text-sm">
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                          <div>
+                            <p className="font-medium">{formatLabel(log.email_type)}</p>
+                            <p className="text-muted-foreground">{log.subject || "-"}</p>
+                          </div>
+                          <StatusBadge status={formatLabel(log.status)} />
+                        </div>
+                        <div className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+                          <span>Sent: {formatDate(log.sent_at)}</span>
+                          <span>Opened: {boolLabel(log.opened)} ({log.open_count})</span>
+                          <span>Clicked: {boolLabel(log.clicked)}</span>
+                          <span>First opened: {formatDate(log.first_opened_at)}</span>
+                          <span>Last opened: {formatDate(log.last_opened_at)}</span>
+                          <span>Error: {log.error_message || "-"}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-sm text-muted-foreground">No marketing email logs yet.</p>
+                )}
               </section>
             </div>
           </>
@@ -571,7 +743,6 @@ function LeadDetailSheet({ lead, onOpenChange }: { lead: CrmLead | null; onOpenC
     </Sheet>
   );
 }
-
 function DetailItem({ label, value, className = "" }: { label: string; value?: string; className?: string }) {
   return (
     <div className={className}>
@@ -586,3 +757,11 @@ function getScoreReasons(lead: CrmLead) {
   if (!lead.scoreReasons) return [];
   return lead.scoreReasons.split(";").map((reason) => reason.trim()).filter(Boolean);
 }
+
+
+
+
+
+
+
+
