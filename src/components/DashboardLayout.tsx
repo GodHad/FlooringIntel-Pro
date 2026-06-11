@@ -2,7 +2,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import {
   LayoutDashboard, Package, Globe2, Activity, Bell, Ticket, Download,
   Settings, Search, Bell as BellIcon, ChevronDown, LogOut, User, CreditCard, Sparkles, Menu, X, Shield, FileText,
-  ChevronsLeft, ChevronsRight, CheckCheck, ReceiptText, CircleHelp,
+  ChevronsLeft, ChevronsRight, CheckCheck, ReceiptText, CircleHelp, UsersRound,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -34,6 +34,7 @@ const nav = [
   { to: "/dashboard/downloads", label: "Downloads", icon: Download },
   { to: "/dashboard/admin/invoices", label: "Admin Invoices", icon: CreditCard, adminOnly: true },
   { to: "/dashboard/admin/subscriptions", label: "Admin Subscriptions", icon: ReceiptText, adminOnly: true },
+  { to: "/dashboard/admin/crm", label: "CRM", icon: UsersRound, adminOnly: true },
   { to: "/dashboard/admin-settings", label: "Admin Settings", icon: Shield, adminOnly: true },
   { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ] as const;

@@ -350,6 +350,100 @@ export type AdminSubscriptionRecord = {
   }>;
 };
 
+
+export type CrmLead = {
+  id: string;
+  company_name: string;
+  email: string;
+  phone?: string;
+  country?: string;
+  address?: string;
+  website_url?: string;
+  description?: string;
+  source?: string;
+  lead_score: number;
+  lead_segment?: string;
+  qualification_status: string;
+  approved_for_outreach: boolean;
+  marketing_enabled: boolean;
+  marketing_status: string;
+  total_email_count: number;
+  report_email_count: number;
+  open_count: number;
+  max_report_email_count: number;
+  email_opened: boolean;
+  clicked_report: boolean;
+  reply_detected: boolean;
+  last_engagement_at?: string;
+  first_opened_at?: string;
+  last_opened_at?: string;
+  last_email_sent_at?: string;
+  next_email_at?: string;
+  registered: boolean;
+  registered_user_id?: string;
+  registered_at?: string;
+  unsubscribe_requested: boolean;
+  do_not_contact: boolean;
+  bounce_detected: boolean;
+  outreach_batch_id?: string;
+  last_error?: string;
+  created_at: string;
+  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CrmLeadSummary = {
+  total_leads: number;
+  qualified_leads: number;
+  approved_for_outreach: number;
+  marketing_enabled: number;
+  marketing_disabled: number;
+  emails_sent_today: number;
+  opened_emails: number;
+  replied_leads: number;
+  registered_leads: number;
+  bounced_failed_leads: number;
+  do_not_contact_leads: number;
+};
+
+export type CrmLeadParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  segment?: string;
+  source?: string;
+  qualification_status?: string;
+  approved?: boolean | string;
+  registered?: boolean | string;
+  opened?: boolean | string;
+  do_not_contact?: boolean | string;
+  min_score?: number;
+  max_score?: number;
+};
+
+export type CrmLeadList = {
+  data: CrmLead[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+  };
+  summary: CrmLeadSummary;
+  options?: {
+    qualification_statuses: string[];
+    lead_segments: string[];
+    marketing_statuses: string[];
+  };
+};
+
+export type CrmLeadDetail = {
+  lead: CrmLead;
+  emailLogs: unknown[];
+};
+
 export type NotificationType =
   | "invoice_status_changed"
   | "ticket_status_changed"
@@ -645,6 +739,15 @@ export const adminService = {
   getAdminBillingInfo: (): Promise<AdminBillingInfo> => request("/admin/settings/billing"),
   updateAdminBillingInfo: (payload: AdminBillingInfo) =>
     request<AdminBillingInfo>("/admin/settings/billing", { method: "PUT", body: JSON.stringify(payload) }),
+};
+
+
+export const crmService = {
+  getLeads: (params: CrmLeadParams = {}): Promise<CrmLeadList> =>
+    request("/admin/crm/leads" + toQueryString(params)),
+  getLead: (id: string): Promise<CrmLeadDetail> => request("/admin/crm/leads/" + id),
+  updateLead: (id: string, payload: Partial<CrmLead>): Promise<CrmLead> =>
+    request("/admin/crm/leads/" + id, { method: "PATCH", body: JSON.stringify(payload) }),
 };
 
 export const downloadService = {

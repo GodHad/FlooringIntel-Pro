@@ -38,6 +38,7 @@ import { Route as DashboardInvoicesInvoiceIdRouteImport } from './routes/dashboa
 import { Route as DashboardDownloadsCustomizeRouteImport } from './routes/dashboard.downloads_.customize'
 import { Route as DashboardAdminSubscriptionsRouteImport } from './routes/dashboard.admin.subscriptions'
 import { Route as DashboardAdminInvoicesRouteImport } from './routes/dashboard.admin.invoices'
+import { Route as DashboardAdminCrmRouteImport } from './routes/dashboard.admin.crm'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -190,6 +191,11 @@ const DashboardAdminInvoicesRoute = DashboardAdminInvoicesRouteImport.update({
   path: '/admin/invoices',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAdminCrmRoute = DashboardAdminCrmRouteImport.update({
+  id: '/admin/crm',
+  path: '/admin/crm',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/websites': typeof DashboardWebsitesRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/admin/crm': typeof DashboardAdminCrmRoute
   '/dashboard/admin/invoices': typeof DashboardAdminInvoicesRoute
   '/dashboard/admin/subscriptions': typeof DashboardAdminSubscriptionsRoute
   '/dashboard/downloads/customize': typeof DashboardDownloadsCustomizeRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/websites': typeof DashboardWebsitesRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/admin/crm': typeof DashboardAdminCrmRoute
   '/dashboard/admin/invoices': typeof DashboardAdminInvoicesRoute
   '/dashboard/admin/subscriptions': typeof DashboardAdminSubscriptionsRoute
   '/dashboard/downloads/customize': typeof DashboardDownloadsCustomizeRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/websites': typeof DashboardWebsitesRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/admin/crm': typeof DashboardAdminCrmRoute
   '/dashboard/admin/invoices': typeof DashboardAdminInvoicesRoute
   '/dashboard/admin/subscriptions': typeof DashboardAdminSubscriptionsRoute
   '/dashboard/downloads_/customize': typeof DashboardDownloadsCustomizeRoute
@@ -309,6 +318,7 @@ export interface FileRouteTypes {
     | '/dashboard/tickets'
     | '/dashboard/websites'
     | '/dashboard/'
+    | '/dashboard/admin/crm'
     | '/dashboard/admin/invoices'
     | '/dashboard/admin/subscriptions'
     | '/dashboard/downloads/customize'
@@ -339,6 +349,7 @@ export interface FileRouteTypes {
     | '/dashboard/tickets'
     | '/dashboard/websites'
     | '/dashboard'
+    | '/dashboard/admin/crm'
     | '/dashboard/admin/invoices'
     | '/dashboard/admin/subscriptions'
     | '/dashboard/downloads/customize'
@@ -370,6 +381,7 @@ export interface FileRouteTypes {
     | '/dashboard/tickets'
     | '/dashboard/websites'
     | '/dashboard/'
+    | '/dashboard/admin/crm'
     | '/dashboard/admin/invoices'
     | '/dashboard/admin/subscriptions'
     | '/dashboard/downloads_/customize'
@@ -598,6 +610,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminInvoicesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/admin/crm': {
+      id: '/dashboard/admin/crm'
+      path: '/admin/crm'
+      fullPath: '/dashboard/admin/crm'
+      preLoaderRoute: typeof DashboardAdminCrmRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
@@ -642,6 +661,7 @@ interface DashboardRouteChildren {
   DashboardTicketsRoute: typeof DashboardTicketsRoute
   DashboardWebsitesRoute: typeof DashboardWebsitesRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardAdminCrmRoute: typeof DashboardAdminCrmRoute
   DashboardAdminInvoicesRoute: typeof DashboardAdminInvoicesRoute
   DashboardAdminSubscriptionsRoute: typeof DashboardAdminSubscriptionsRoute
   DashboardDownloadsCustomizeRoute: typeof DashboardDownloadsCustomizeRoute
@@ -659,6 +679,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardTicketsRoute: DashboardTicketsRoute,
   DashboardWebsitesRoute: DashboardWebsitesRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardAdminCrmRoute: DashboardAdminCrmRoute,
   DashboardAdminInvoicesRoute: DashboardAdminInvoicesRoute,
   DashboardAdminSubscriptionsRoute: DashboardAdminSubscriptionsRoute,
   DashboardDownloadsCustomizeRoute: DashboardDownloadsCustomizeRoute,
