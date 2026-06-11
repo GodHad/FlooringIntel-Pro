@@ -13,6 +13,26 @@ import { CookieConsent } from "@/components/CookieConsent";
 
 import appCss from "../styles.css?url";
 
+const isLocalEnvironment = () => {
+  const mode = import.meta.env.MODE;
+  const host = typeof window !== "undefined" ? window.location.hostname : "";
+  return import.meta.env.DEV || mode === "development" || host === "localhost" || host === "127.0.0.1";
+};
+
+const clarityScripts = isLocalEnvironment()
+  ? []
+  : [
+      {
+        children: `
+          (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "x1og1ddkhg");
+        `,
+      },
+    ];
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -91,17 +111,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/favicon.ico" },
     ],
-    scripts: [
-      {
-        children: `
-          (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-          })(window, document, "clarity", "script", "x1og1ddkhg");
-        `,
-      },
-    ],
+    scripts: clarityScripts,
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -136,3 +146,5 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
+
