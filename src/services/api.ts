@@ -362,6 +362,11 @@ export type CrmLead = {
   description?: string;
   source?: string;
   lead_score: number;
+  score_reasons: string[];
+  scoreReasons?: string;
+  recommended_action?: string;
+  email_domain?: string;
+  scored_at?: string;
   lead_segment?: string;
   qualification_status: string;
   approved_for_outreach: boolean;
@@ -421,6 +426,8 @@ export type CrmLeadParams = {
   do_not_contact?: boolean | string;
   min_score?: number;
   max_score?: number;
+  sort_by?: string;
+  sort_dir?: "asc" | "desc";
 };
 
 export type CrmLeadList = {
@@ -442,6 +449,22 @@ export type CrmLeadList = {
 export type CrmLeadDetail = {
   lead: CrmLead;
   emailLogs: unknown[];
+};
+
+export type CrmImportResult = {
+  total_rows: number;
+  imported_count: number;
+  skipped_duplicate_count: number;
+  skipped_invalid_count: number;
+  qualified_count: number;
+  needs_review_count: number;
+  low_priority_count: number;
+};
+
+export type CrmBulkResult = {
+  ok: true;
+  matched: number;
+  modified: number;
 };
 
 export type NotificationType =
@@ -745,9 +768,19 @@ export const adminService = {
 export const crmService = {
   getLeads: (params: CrmLeadParams = {}): Promise<CrmLeadList> =>
     request("/admin/crm/leads" + toQueryString(params)),
+  importCsv: (file: File): Promise<CrmImportResult> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return rawRequest("/admin/crm/import-csv", { method: "POST", body: formData }).then((response) => response.json());
+  },
   getLead: (id: string): Promise<CrmLeadDetail> => request("/admin/crm/leads/" + id),
   updateLead: (id: string, payload: Partial<CrmLead>): Promise<CrmLead> =>
     request("/admin/crm/leads/" + id, { method: "PATCH", body: JSON.stringify(payload) }),
+  bulkApprove: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-approve", { lead_ids }),
+  bulkUnapprove: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-unapprove", { lead_ids }),
+  bulkDoNotContact: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-do-not-contact", { lead_ids }),
+  bulkNotInterested: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/bulk-not-interested", { lead_ids }),
+  recalculateScore: (lead_ids: string[]): Promise<CrmBulkResult> => post("/admin/crm/leads/recalculate-score", { lead_ids }),
 };
 
 export const downloadService = {
@@ -790,4 +823,5 @@ export const getApiUrl = (path: string) => {
 
   return `${API_BASE}${path}`;
 };
+
 
