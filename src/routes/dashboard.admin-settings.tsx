@@ -96,7 +96,7 @@ function AdminUserRow({
           <SelectContent>
             <SelectItem value="Admin">Admin</SelectItem>
             <SelectItem value="Partner">Partner</SelectItem>
-            <SelectItem value="User">User</SelectItem>
+            {/* <SelectItem value="User">User</SelectItem> */}
           </SelectContent>
         </Select>
       </td>
