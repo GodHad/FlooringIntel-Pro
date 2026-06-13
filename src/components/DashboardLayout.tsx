@@ -1,8 +1,8 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Package, Globe2, Activity, Bell, Ticket, Download,
-  Settings, Search, Bell as BellIcon, ChevronDown, LogOut, User, CreditCard, Sparkles, Menu, X, Shield, FileText,
-  ChevronsLeft, ChevronsRight, CheckCheck, ReceiptText, CircleHelp, UsersRound,
+  LayoutDashboard, Package, Globe2, Activity, Ticket, Download,
+  Settings, Search, Bell as BellIcon, ChevronDown, LogOut, User, Menu, X, Shield,
+  ChevronsLeft, ChevronsRight, CheckCheck, CircleHelp,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -28,24 +28,15 @@ const nav = [
   { to: "/dashboard/websites", label: "Websites", icon: Globe2 },
   { to: "/dashboard/scraping-status", label: "Scraping Status", icon: Activity },
   { to: "/dashboard/notifications", label: "Notifications", icon: BellIcon },
-  { to: "/dashboard/subscriptions", label: "Subscriptions", icon: Bell },
-  { to: "/dashboard/invoices", label: "Invoices", icon: FileText },
   { to: "/dashboard/tickets", label: "Tickets", icon: Ticket },
   { to: "/dashboard/downloads", label: "Downloads", icon: Download },
-  { to: "/dashboard/admin/invoices", label: "Admin Invoices", icon: CreditCard, adminOnly: true },
-  { to: "/dashboard/admin/subscriptions", label: "Admin Subscriptions", icon: ReceiptText, adminOnly: true },
-  { to: "/dashboard/admin/crm", label: "CRM", icon: UsersRound, adminOnly: true },
   { to: "/dashboard/admin-settings", label: "Admin Settings", icon: Shield, adminOnly: true },
   { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ] as const;
 
 const getVisibleNav = (role?: string) => {
-  if (role === "Partner") {
-    return nav.filter((item) => !["/dashboard/subscriptions", "/dashboard/invoices"].includes(item.to) && !("adminOnly" in item));
-  }
-
   if (role === "Admin") {
-    return nav.filter((item) => item.to !== "/dashboard/invoices");
+    return nav;
   }
 
   return nav.filter((item) => !("adminOnly" in item));
@@ -198,11 +189,6 @@ export function DashboardLayout() {
                 <DropdownMenuItem onClick={() => navigate({ to: "/dashboard/settings" })}>
                   <User className="mr-2 h-4 w-4" /> Settings
                 </DropdownMenuItem>
-                {user?.role === "User" && (
-                  <DropdownMenuItem onClick={() => navigate({ to: "/dashboard/subscriptions" })}>
-                    <CreditCard className="mr-2 h-4 w-4" /> Billing
-                  </DropdownMenuItem>
-                )}
                 <DropdownMenuSeparator />
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -241,18 +227,13 @@ export function DashboardLayout() {
   );
 }
 
-function getNotificationIcon(type: AppNotification["type"]) {
-  if (type.includes("invoice")) return ReceiptText;
-  if (type.includes("ticket") || type === "admin_note_added") return Ticket;
+function getNotificationIcon(type: AppNotification["type"]) {  if (type.includes("ticket") || type === "admin_note_added") return Ticket;
   if (type.includes("product")) return Package;
   if (type.includes("scraping")) return Activity;
   return CircleHelp;
 }
 
 function getNotificationPath(notification: AppNotification) {
-  if (notification.relatedType === "invoice" && notification.relatedId) {
-    return `/dashboard/invoices/${notification.relatedId}`;
-  }
   if (notification.relatedType === "ticket") return "/dashboard/tickets";
   if (notification.relatedType === "product") return "/dashboard/products";
   if (notification.relatedType === "scraping") return "/dashboard/scraping-status";

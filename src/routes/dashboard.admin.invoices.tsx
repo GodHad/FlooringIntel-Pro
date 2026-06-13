@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader, StatusBadge } from "@/components/DashboardLayout";
@@ -17,6 +17,9 @@ import { Download, Eye, Search } from "lucide-react";
 import { InvoiceCard } from "./dashboard.subscriptions.checkout";
 
 export const Route = createFileRoute("/dashboard/admin/invoices")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Admin Invoices - FlooringIntel" }] }),
   component: AdminInvoicesPage,
 });

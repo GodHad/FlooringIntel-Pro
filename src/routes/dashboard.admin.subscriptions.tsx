@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader, StatusBadge } from "@/components/DashboardLayout";
 import { Card } from "@/components/ui/card";
@@ -7,6 +7,9 @@ import { adminService } from "@/services/api";
 import { Eye } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/admin/subscriptions")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Admin Subscriptions - FlooringIntel" }] }),
   component: AdminSubscriptionsPage,
 });

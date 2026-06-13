@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PageHeader, StatusBadge } from "@/components/DashboardLayout";
@@ -49,6 +49,9 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/admin/crm")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "CRM - FlooringIntel" }] }),
   component: AdminCrmPage,
 });

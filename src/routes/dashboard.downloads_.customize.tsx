@@ -140,14 +140,11 @@ function CustomizeExportFieldsPage() {
       <div>
         <PageHeader title="Customize export fields" description="Choose the columns included in product exports" />
         <Card className="p-6">
-          <h3 className="font-display text-lg font-semibold">Pro feature</h3>
+          <h3 className="font-display text-lg font-semibold">Export customization unavailable</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            Custom export fields are available on Pro and Business plans. Your exports will continue to use the default FlooringIntel field set.
+            Custom export fields are not enabled for your account. Your exports will continue to use the default FlooringIntel field set.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <Button asChild>
-              <Link to="/dashboard/subscriptions">View plans</Link>
-            </Button>
             <Button asChild variant="outline">
               <Link to="/dashboard/downloads"><ArrowLeft className="mr-2 h-4 w-4" /> Back to downloads</Link>
             </Button>

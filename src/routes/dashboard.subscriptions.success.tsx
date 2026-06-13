@@ -1,10 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/DashboardLayout";
 import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/subscriptions/success")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Payment Received - FlooringIntel" }] }),
   component: SubscriptionSuccessPage,
 });

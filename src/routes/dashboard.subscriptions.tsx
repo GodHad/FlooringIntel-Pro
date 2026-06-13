@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -14,6 +14,9 @@ import { authService, subscriptionService, type SubscriptionPlan } from "@/servi
 import { CheckCircle2, CreditCard, Crown, Mail, MessageSquare } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/subscriptions")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Subscriptions - FlooringIntel" }] }),
   component: SubscriptionsPage,
 });

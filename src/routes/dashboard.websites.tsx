@@ -77,7 +77,7 @@ function WebsitesPage() {
       link.click();
       window.URL.revokeObjectURL(url);
       toast.success(download.metadata.limited
-        ? "Your free plan export includes the first 50 products. Upgrade for unlimited exports."
+        ? "Your export includes the available limited product set."
         : "Website export downloaded");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Website export failed");

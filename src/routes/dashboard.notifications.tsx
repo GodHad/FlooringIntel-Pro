@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Activity, Bell, CheckCheck, Package, ReceiptText, Search, Ticket, Trash2 } from "lucide-react";
+import { Activity, Bell, CheckCheck, Package, Search, Ticket, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,14 +20,12 @@ export const Route = createFileRoute("/dashboard/notifications")({
 const filters = [
   { value: "all", label: "All" },
   { value: "unread", label: "Unread" },
-  { value: "invoice", label: "Invoice" },
   { value: "ticket", label: "Ticket" },
   { value: "products", label: "Products" },
   { value: "scraping", label: "Scraping" },
 ] as const;
 
 function getIcon(type: AppNotification["type"]) {
-  if (type.includes("invoice")) return ReceiptText;
   if (type.includes("ticket") || type === "admin_note_added") return Ticket;
   if (type.includes("product")) return Package;
   if (type.includes("scraping")) return Activity;
@@ -35,7 +33,6 @@ function getIcon(type: AppNotification["type"]) {
 }
 
 function getDestination(notification: AppNotification) {
-  if (notification.relatedType === "invoice" && notification.relatedId) return `/dashboard/invoices/${notification.relatedId}`;
   if (notification.relatedType === "ticket") return "/dashboard/tickets";
   if (notification.relatedType === "product") return "/dashboard/products";
   if (notification.relatedType === "scraping") return "/dashboard/scraping-status";
@@ -45,7 +42,6 @@ function getDestination(notification: AppNotification) {
 function matchesFilter(notification: AppNotification, filter: string) {
   if (filter === "all") return true;
   if (filter === "unread") return !notification.isRead;
-  if (filter === "invoice") return notification.type.includes("invoice") || notification.relatedType === "invoice";
   if (filter === "ticket") return notification.type.includes("ticket") || notification.relatedType === "ticket";
   if (filter === "products") return notification.type.includes("product") || notification.relatedType === "product";
   if (filter === "scraping") return notification.type.includes("scraping") || notification.relatedType === "scraping";
@@ -87,7 +83,7 @@ function NotificationsPage() {
 
   return (
     <div>
-      <PageHeader title="Notifications" description="Invoice, ticket, product, and scraping updates">
+      <PageHeader title="Notifications" description="Ticket, product, and scraping updates">
         <Button
           variant="outline"
           onClick={async () => {

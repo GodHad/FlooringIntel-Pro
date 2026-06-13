@@ -43,13 +43,9 @@ function DownloadsPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">
           <h3 className="font-display text-lg font-semibold">Create export</h3>
-          <p className="text-sm text-muted-foreground">Generate an .xlsx file with the data you need.</p>
-          {!hasUnlimitedAccess && subscribedWebsites.length === 0 && (
+          <p className="text-sm text-muted-foreground">Generate an .xlsx file with the data you need.</p>          {!hasUnlimitedAccess && subscribedWebsites.length === 0 && (
             <div className="mt-4 rounded-md border border-border bg-secondary/40 p-3 text-sm">
-              <p className="text-muted-foreground">You do not have any subscribed websites yet.</p>
-              <Button asChild variant="outline" size="sm" className="mt-3">
-                <Link to="/dashboard/subscriptions">Subscribe to websites</Link>
-              </Button>
+              <p className="text-muted-foreground">No export-enabled websites are available for your account yet. Please contact an administrator.</p>
             </div>
           )}
           <form

@@ -1,9 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/DashboardLayout";
 
 export const Route = createFileRoute("/dashboard/subscriptions/cancel")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Checkout Cancelled - FlooringIntel" }] }),
   component: SubscriptionCancelPage,
 });

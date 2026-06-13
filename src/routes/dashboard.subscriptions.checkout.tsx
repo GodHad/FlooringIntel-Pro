@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -15,6 +15,9 @@ import mainLogo from "@/assets/main-logo-1.png";
 type Search = { siteId?: string; siteIds?: string; planId?: string; billingCycle?: "monthly" | "annual"; selectedSiteCount?: number };
 
 export const Route = createFileRoute("/dashboard/subscriptions/checkout")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Checkout - FlooringIntel" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
     siteId: typeof s.siteId === "string" ? s.siteId : undefined,

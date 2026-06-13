@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/DashboardLayout";
 import { invoiceService } from "@/services/invoices";
 import { InvoiceCard } from "./dashboard.subscriptions.checkout";
 
 export const Route = createFileRoute("/dashboard/invoices/$invoiceId")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({ meta: [{ title: "Invoice Details - FlooringIntel" }] }),
   component: InvoiceDetailPage,
 });
