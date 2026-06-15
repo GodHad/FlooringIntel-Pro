@@ -68,11 +68,11 @@ function LoginPage() {
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" value="user@dezigned.com" required />
+          <Input id="email" name="email" type="email" defaultValue="user@dezigned.com" required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" value="123456" required />
+          <Input id="password" name="password" type="password" defaultValue="123456" required />
         </div>
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
