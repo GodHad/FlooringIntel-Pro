@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { PageHeader, StatusBadge } from "@/components/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,8 +27,12 @@ function DownloadsPage() {
   const isAdmin = user?.role === "Admin";
   const hasUnlimitedAccess = user?.role === "Admin" || user?.role === "Partner";
   const subscribedWebsites = hasUnlimitedAccess ? websites : websites.filter((website) => website.subscribed);
-  const [type, setType] = useState("all");
-  const [site, setSite] = useState("all");
+  const [website, setWebsite] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [useDateRange, setUseDateRange] = useState(false);
+  const [addedFrom, setAddedFrom] = useState("");
+  const [addedTo, setAddedTo] = useState("");
+  const [q, setQ] = useState("");
 
   return (
     <div>
@@ -43,61 +48,94 @@ function DownloadsPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">
           <h3 className="font-display text-lg font-semibold">Create export</h3>
-          <p className="text-sm text-muted-foreground">Generate an .xlsx file with the data you need.</p>
+          <p className="text-sm text-muted-foreground">Create export from selected filters.</p>
           {!hasUnlimitedAccess && subscribedWebsites.length === 0 && (
             <div className="mt-4 rounded-md border border-border bg-secondary/40 p-3 text-sm">
-              <p className="text-muted-foreground">You do not have any subscribed websites yet.</p>
-              <Button asChild variant="outline" size="sm" className="mt-3">
-                <Link to="/dashboard/subscriptions">Subscribe to websites</Link>
-              </Button>
+              <p className="text-muted-foreground">No export-enabled websites are available for your account yet. Please contact an administrator.</p>
             </div>
           )}
           <form
             className="mt-5 space-y-4"
             onSubmit={async (e) => {
               e.preventDefault();
-              if (type === "website" && site === "all") {
-                toast.error("Choose a subscribed website for this export.");
-                return;
-              }
-              await downloadService.createExport({ type, website: site === "all" ? undefined : site });
+              const filters = {
+                website: website === "all" ? undefined : website,
+                availability: status === "available"
+                  ? "In Stock"
+                  : status === "deleted"
+                    ? "Out of Stock"
+                    : undefined,
+                addedFrom: useDateRange ? addedFrom || undefined : undefined,
+                addedTo: useDateRange ? addedTo || undefined : undefined,
+                q: q.trim() || undefined,
+              };
+
+              await downloadService.createExport({
+                type: "filtered",
+                website: website === "all" ? undefined : website,
+                dateRange: useDateRange ? `${addedFrom || "Any"} - ${addedTo || "Any"}` : undefined,
+                filters,
+              });
               await queryClient.invalidateQueries({ queryKey: ["exports"] });
               toast.success("Export added to history. Download it from export history.");
             }}
           >
             <div className="space-y-2">
-              <Label>Export type</Label>
-              <Select value={type} onValueChange={setType}>
+              <Label>Website</Label>
+              <Select value={website} onValueChange={setWebsite}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All products</SelectItem>
-                  <SelectItem value="website">Products by website</SelectItem>
-                  <SelectItem value="range">By date range</SelectItem>
-                  <SelectItem value="new">Only new products</SelectItem>
-                  <SelectItem value="available">Only available products</SelectItem>
-                  <SelectItem value="filtered">Filtered products</SelectItem>
+                  <SelectItem value="all">All websites</SelectItem>
+                  {subscribedWebsites.map((w) => <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
-            {type === "website" && (
-              <div className="space-y-2">
-                <Label>Website</Label>
-                <Select value={site} onValueChange={setSite}>
-                  <SelectTrigger><SelectValue placeholder="Choose website" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" disabled>Choose website</SelectItem>
-                    {subscribedWebsites.map((w) => <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            {type === "range" && (
+
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All statuses</SelectItem>
+                  <SelectItem value="available">Available</SelectItem>
+                  <SelectItem value="deleted">Deleted</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Search</Label>
+              <Input
+                value={q}
+                onChange={(event) => setQ(event.target.value)}
+                placeholder="Search product, SKU, color..."
+              />
+            </div>
+
+            <div className="flex items-center gap-2 rounded-md border border-border p-3">
+              <Checkbox
+                id="download-date-range"
+                checked={useDateRange}
+                onCheckedChange={(checked) => setUseDateRange(Boolean(checked))}
+              />
+              <Label htmlFor="download-date-range" className="cursor-pointer">Date Range</Label>
+            </div>
+
+            {useDateRange && (
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2"><Label>From</Label><Input type="date" /></div>
-                <div className="space-y-2"><Label>To</Label><Input type="date" /></div>
+                <div className="space-y-2">
+                  <Label>From</Label>
+                  <Input type="date" value={addedFrom} onChange={(event) => setAddedFrom(event.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>To</Label>
+                  <Input type="date" value={addedTo} onChange={(event) => setAddedTo(event.target.value)} />
+                </div>
               </div>
             )}
-            <div className="space-y-2"><Label>Format</Label>
+
+            <div className="space-y-2">
+              <Label>Format</Label>
               <Select defaultValue="xlsx">
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent><SelectItem value="xlsx">Excel (.xlsx)</SelectItem></SelectContent>
@@ -106,7 +144,7 @@ function DownloadsPage() {
             <Button
               type="submit"
               className="w-full"
-              disabled={(!hasUnlimitedAccess && subscribedWebsites.length === 0) || (type === "website" && site === "all")}
+              disabled={!hasUnlimitedAccess && subscribedWebsites.length === 0}
             >
               <Sparkles className="mr-2 h-4 w-4" /> Generate export
             </Button>
